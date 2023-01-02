@@ -1,17 +1,19 @@
-import { catchAsyncError } from "../middlewares/catchAsyncError.js";
-import { User } from "../models/User.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import { instance } from "../server.js";
-import crypto from "crypto";
-import { Payment } from "../models/Payment.js";
+import { catchAsyncError } from '../middlewares/catchAsyncError.js';
+import { User } from '../models/User.js';
+import ErrorHandler from '../utils/errorHandler.js';
+import { instance } from '../server.js';
+import crypto from 'crypto';
+import { Payment } from '../models/Payment.js';
+import * as Message from '../constants/Message.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export const buySubscription = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
 
-  if (user.role === "admin")
+  if (user.role === 'admin')
     return next(new ErrorHandler("Admin can't buy subscription", 400));
 
-  const plan_id = process.env.PLAN_ID || "plan_JuJevKAcuZdtRO";
+  const plan_id = process.env.PLAN_ID || 'plan_JuJevKAcuZdtRO';
 
   const subscription = await instance.subscriptions.create({
     plan_id,
@@ -40,9 +42,9 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
   const subscription_id = user.subscription.id;
 
   const generated_signature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
-    .update(razorpay_payment_id + "|" + subscription_id, "utf-8")
-    .digest("hex");
+    .createHmac('sha256', process.env.RAZORPAY_API_SECRET)
+    .update(razorpay_payment_id + '|' + subscription_id, 'utf-8')
+    .digest('hex');
 
   const isAuthentic = generated_signature === razorpay_signature;
 
@@ -56,7 +58,7 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
     razorpay_subscription_id,
   });
 
-  user.subscription.status = "active";
+  user.subscription.status = 'active';
 
   await user.save();
 
@@ -101,7 +103,81 @@ export const cancelSubscription = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: refund
-      ? "Subscription cancelled, You will receive full refund within 7 days."
-      : "Subscription cancelled, Now refund initiated as subscription was cancelled after 7 days.",
+      ? 'Subscription cancelled, You will receive full refund within 7 days.'
+      : 'Subscription cancelled, Now refund initiated as subscription was cancelled after 7 days.',
   });
 });
+
+export const getPaymentByUser = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = '', field = 'name' } = req.query;
+    const paymentInformation = await User.find(
+      {
+        [field]: new RegExp(search),
+        role: 'user' 
+      },
+      {
+        name: 1,
+        email: 1,
+        subscription: 1,
+      },
+      {
+        limit: limit,
+        skip: (page - 1) * limit
+      }
+    )
+      .sort('name');
+
+    res.status(200).json({
+      success: true,
+      message: Message.SUCCESS,
+      data: {
+        paymentInformation,
+      },
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const activate = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    user.subscription.status = 'active';
+    user.subscription.id = uuidv4();
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: Message.SUCCESS,
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+export const deactivate = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    user.subscription.status = 'created';
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: Message.SUCCESS,
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
