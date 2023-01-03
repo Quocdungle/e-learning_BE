@@ -15,6 +15,7 @@ export const addCommentToCourse = async (req, res) => {
           comments: {
             title: comment.title,
             user_id: req.user._id,
+            userName: comment.userName,
             createdAt: Date.now(),
           },
         },

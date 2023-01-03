@@ -14,8 +14,8 @@ export const addRatingToCourse = async (req, res) => {
         $push: {
           ratings: {
             point: rating.point,
-            user_id: '62d3a033bebda2f24999d9d3',
-            userName: userName
+            user_id: req.user._id,
+            userName: userName,
           },
         },
       }
