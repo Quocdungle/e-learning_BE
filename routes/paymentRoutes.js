@@ -4,6 +4,9 @@ import {
   cancelSubscription,
   getRazorPayKey,
   paymentVerification,
+  getPaymentByUser,
+  activate,
+  deactivate
 } from "../controllers/paymentController.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 
@@ -20,5 +23,8 @@ router.route("/razorpaykey").get(getRazorPayKey);
 
 // Cancel Subscription
 router.route("/subscribe/cancel").delete(isAuthenticated, cancelSubscription);
+router.route("/subscribe/info").get(getPaymentByUser);
+router.route("/subscribe/info/:userId").put(activate);
+router.route("/subscribe/info/:userId").delete(deactivate);
 
 export default router;
