@@ -1,10 +1,10 @@
-import { catchAsyncError } from '../middlewares/catchAsyncError.js';
-import { Course } from '../models/Course.js';
-import * as Message from '../constants/Message.js';
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { Course } from "../models/Course.js";
+import * as Message from "../constants/Message.js";
 
 export const addRatingToCourse = async (req, res) => {
   try {
-    const { rating, userName } = req.body;
+    const { rating, userName, userAvt } = req.body;
 
     await Course.updateOne(
       {
@@ -16,6 +16,7 @@ export const addRatingToCourse = async (req, res) => {
             point: rating.point,
             user_id: req.user._id,
             userName: userName,
+            userAvt: userAvt,
           },
         },
       }

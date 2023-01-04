@@ -1,16 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Please enter course title'],
-    minLength: [4, 'Title must be at least 4 characters'],
+    required: [true, "Please enter course title"],
+    minLength: [4, "Title must be at least 4 characters"],
     maxLength: [80, "Title can't exceed 80 characters"],
   },
   description: {
     type: String,
-    required: [true, 'Please enter course title'],
-    minLength: [20, 'Title must be at least 20 characters'],
+    required: [true, "Please enter course title"],
+    minLength: [20, "Title must be at least 20 characters"],
   },
 
   lectures: [
@@ -63,9 +63,10 @@ const schema = new mongoose.Schema({
       title: String,
       user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
       },
       userName: String,
+      userAvt: String,
       createdAt: {
         type: String,
         default: Date.now,
@@ -76,15 +77,16 @@ const schema = new mongoose.Schema({
     {
       user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
       },
       point: Number,
-      userName: String
+      userName: String,
+      userAvt: String,
     },
   ],
   createdBy: {
     type: String,
-    required: [true, 'Enter Course Creator Name'],
+    required: [true, "Enter Course Creator Name"],
   },
   createdAt: {
     type: Date,
@@ -92,4 +94,4 @@ const schema = new mongoose.Schema({
   },
 });
 
-export const Course = mongoose.model('Course', schema);
+export const Course = mongoose.model("Course", schema);

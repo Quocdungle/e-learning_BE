@@ -1,6 +1,6 @@
-import { catchAsyncError } from '../middlewares/catchAsyncError.js';
-import { Course } from '../models/Course.js';
-import * as Message from '../constants/Message.js';
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { Course } from "../models/Course.js";
+import * as Message from "../constants/Message.js";
 
 export const addCommentToCourse = async (req, res) => {
   try {
@@ -16,6 +16,7 @@ export const addCommentToCourse = async (req, res) => {
             title: comment.title,
             user_id: req.user._id,
             userName: comment.userName,
+            userAvt: comment.userAvt,
             createdAt: Date.now(),
           },
         },
@@ -37,7 +38,7 @@ export const addCommentToCourse = async (req, res) => {
 export const getCommentById = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { comments } = await Course.findById(courseId, { comments: 1});
+    const { comments } = await Course.findById(courseId, { comments: 1 });
 
     res.status(200).json({
       success: true,
