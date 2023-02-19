@@ -18,7 +18,6 @@ const router = express.Router();
 
 // Buy Subscription
 router.route("/subscribe").get(isAuthenticated, buySubscription);
-// router.route('/pay/momo/:userId').get(isAuthenticated, sendmomo);
 router.route("/pay/momo/success").get(momoSuccess);
 router.route("/pay/momo/:userId").get(sendmomo);
 
