@@ -1,6 +1,6 @@
-import { User } from '../models/User.js';
-import { Course } from '../models/Course.js';
-import jsrecommender from './recommender.js';
+import { User } from "../models/User.js";
+import { Course } from "../models/Course.js";
+import jsrecommender from "./recommender.js";
 
 const training = async () => {
   var recommender = new jsrecommender.Recommender();
@@ -27,9 +27,7 @@ const training = async () => {
     }
   }
 
-  console.log(table);
   var model = recommender.fit(table);
-  console.log(model);
 
   // predicted_table = recommender.transform(table);
 

@@ -25,13 +25,13 @@ var jsrecommender = jsrecommender || {};
   };
 
   Table.prototype.cellKey = function (rowName, colName) {
-    var rowName = rowName.replace('-', '');
-    var colName = colName.replace('-', '');
-    return rowName + '-' + colName;
+    var rowName = rowName.replace("-", "");
+    var colName = colName.replace("-", "");
+    return rowName + "-" + colName;
   };
 
   Table.prototype.getNames = function (cellKey) {
-    var names = cellKey.split('-');
+    var names = cellKey.split("-");
     return {
       rowName: names[0],
       colName: names[1],
@@ -57,8 +57,8 @@ var jsrecommender = jsrecommender || {};
   };
 
   Table.prototype.setCell = function (rowName, colName, value) {
-    var rowName = rowName.replace('-', '');
-    var colName = colName.replace('-', '');
+    var rowName = rowName.replace("-", "");
+    var colName = colName.replace("-", "");
 
     var key = this.cellKey(rowName, colName);
     var exists = this.containsCell(rowName, colName);
